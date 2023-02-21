@@ -88,7 +88,7 @@ services:
       - "traefik.http.middlewares.system-monitoring-stripprefix.stripprefix.prefixes=/system_dashboard"
       - "traefik.http.services.system-monitoring.loadbalancer.server.port=3000"
       - "traefik.http.routers.system-monitoring-http.entrypoints=traefik"
-      - "traefik.http.routers.system-monitoring-http.rule=Host(`{{domain_name}}`) && PathPrefix(`/system_dashboard`)"
+      - "traefik.http.routers.system-monitoring-http.rule=PathPrefix(`/system_dashboard`)"
       - "traefik.http.routers.system-monitoring-http.middlewares=system-monitoring-stripprefix, main-auth"
       - "org.label-schema.group=system-monitoring"
 
