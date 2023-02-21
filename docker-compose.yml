@@ -89,7 +89,7 @@ services:
       - "traefik.http.services.system-monitoring.loadbalancer.server.port=3000"
       - "traefik.http.routers.system-monitoring-http.entrypoints=traefik"
       - "traefik.http.routers.system-monitoring-http.rule=PathPrefix(`/system_dashboard`)"
-      - "traefik.http.routers.system-monitoring-http.middlewares=system-monitoring-stripprefix, main-auth"
+      - "traefik.http.routers.system-monitoring-http.middlewares=system-monitoring-stripprefix"
       - "org.label-schema.group=system-monitoring"
 
   pushgateway:
