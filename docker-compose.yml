@@ -15,7 +15,7 @@ volumes:
 services:
 
   prometheus:
-    image: prom/prometheus:v2.17.1
+    image: prom/prometheus:v2.42.0
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -37,7 +37,7 @@ services:
       org.label-schema.group: "system-monitoring"
 
   alertmanager:
-    image: prom/alertmanager:v0.20.0
+    image: prom/alertmanager:v0.25.0
     volumes:
       - ./alertmanager:/etc/alertmanager
     command:
@@ -68,7 +68,7 @@ services:
       org.label-schema.group: "system-monitoring"
 
   grafana:
-    image: grafana/grafana:6.7.2
+    image: grafana/grafana:9.3.6
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
@@ -93,7 +93,7 @@ services:
       - "org.label-schema.group=system-monitoring"
 
   pushgateway:
-    image: prom/pushgateway:v1.2.0
+    image: prom/pushgateway:v1.5.1
     restart: unless-stopped
     expose:
       - 9091
