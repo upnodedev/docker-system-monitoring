@@ -84,6 +84,8 @@ services:
     networks:
       - system-monitor-net
       - traefik_proxy
+    extra_hosts:
+      - host.docker.internal:host-gateway
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_proxy"
