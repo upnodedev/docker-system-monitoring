@@ -1,11 +1,7 @@
 route:
-    receiver: 'slack'
+  receiver: 'controller_webhook'
 
 receivers:
-    - name: 'slack'
-      slack_configs:
-          - send_resolved: true
-            text: "{{ .CommonAnnotations.description }}"
-            username: 'Prometheus'
-            channel: '#prometheus'
-            api_url: 'https://hooks.slack.com/services/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'
+  - name: 'controller_webhook'
+    webhook_configs:
+      - url: 'http://host.docker.internal:1111/alertmanager'
