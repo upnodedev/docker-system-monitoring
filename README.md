@@ -10,6 +10,11 @@ dockprom](https://github.com/stefanprodan/dockprom)
 
 Additional info: [Docker - Prometheus and Grafana](https://bogotobogo.com/DevOps/Docker/Docker_Prometheus_Grafana.php)
 
+## External dependencies
+
+* node-exporter: Must install using traditional systemctl service for the most accurate data
+* traefik: Must be installed on separated docker compose attached to the global "traefik_proxy" network
+
 ## Install
 
 ### Create .env:
