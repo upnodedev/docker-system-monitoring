@@ -9,8 +9,8 @@ networks:
       name: traefik_proxy
 
 volumes:
-    prometheus_data: {}
-    grafana_data: {}
+  prometheus_data: {}
+  grafana_data: {}
 
 services:
 
@@ -77,6 +77,7 @@ services:
       - GF_SERVER_ROOT_URL=/system_dashboard
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
     restart: unless-stopped
     expose:
       - 3000
