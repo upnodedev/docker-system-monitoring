@@ -3,7 +3,7 @@ groups:
   rules:
   - alert: monitor_service_down
     expr: up == 0
-    for: 30s
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -14,7 +14,7 @@ groups:
   rules:
   - alert: high_cpu_load
     expr: node_load1 > 1.5
-    for: 30s
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -23,7 +23,7 @@ groups:
 
   - alert: high_memory_load
     expr: (sum(node_memory_MemTotal_bytes) - sum(node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) ) / sum(node_memory_MemTotal_bytes) * 100 > 85
-    for: 30s
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -32,7 +32,7 @@ groups:
 
   - alert: high_storage_load
     expr: (node_filesystem_size_bytes{fstype="aufs"} - node_filesystem_free_bytes{fstype="aufs"}) / node_filesystem_size_bytes{fstype="aufs"}  * 100 > 85
-    for: 30s
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -43,7 +43,7 @@ groups:
   rules:
   - alert: PrometheusJobMissing
     expr: absent(up{job="prometheus"})
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -52,7 +52,7 @@ groups:
 
   - alert: PrometheusTargetMissing
     expr: up == 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -61,7 +61,7 @@ groups:
 
   - alert: PrometheusAllTargetsMissing
     expr: sum by (job) (up) == 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -70,7 +70,7 @@ groups:
 
   - alert: PrometheusTargetMissingWithWarmupTime
     expr: sum by (instance, job) ((up == 0) * on (instance) group_right(job) (node_time_seconds - node_boot_time_seconds > 600))
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -79,7 +79,7 @@ groups:
 
   - alert: PrometheusConfigurationReloadFailure
     expr: prometheus_config_last_reload_successful != 1
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -88,7 +88,7 @@ groups:
 
   - alert: PrometheusTooManyRestarts
     expr: changes(process_start_time_seconds{job=~"prometheus|pushgateway|alertmanager"}[15m]) > 2
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -97,7 +97,7 @@ groups:
 
   - alert: PrometheusAlertmanagerJobMissing
     expr: absent(up{job="alertmanager"})
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -106,7 +106,7 @@ groups:
 
   - alert: PrometheusAlertmanagerConfigurationReloadFailure
     expr: alertmanager_config_last_reload_successful != 1
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -115,25 +115,25 @@ groups:
 
   - alert: PrometheusAlertmanagerConfigNotSynced
     expr: count(count_values("config_hash", alertmanager_config_hash)) > 1
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
       summary: Prometheus AlertManager config not synced (instance {{ $labels.instance }})
       description: "Configurations of AlertManager cluster instances are out of sync\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-  - alert: PrometheusAlertmanagerE2eDeadManSwitch
-    expr: vector(1)
-    for: 0m
-    labels:
-      severity: critical
-    annotations:
-      summary: Prometheus AlertManager E2E dead man switch (instance {{ $labels.instance }})
-      description: "Prometheus DeadManSwitch is an always-firing alert. It's used as an end-to-end test of Prometheus through the Alertmanager.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#  - alert: PrometheusAlertmanagerE2eDeadManSwitch
+#    expr: vector(1)
+#    for: 0m
+#    labels:
+#      severity: critical
+#    annotations:
+#      summary: Prometheus AlertManager E2E dead man switch (instance {{ $labels.instance }})
+#      description: "Prometheus DeadManSwitch is an always-firing alert. It's used as an end-to-end test of Prometheus through the Alertmanager.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
   - alert: PrometheusNotConnectedToAlertmanager
     expr: prometheus_notifications_alertmanagers_discovered < 1
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -142,7 +142,7 @@ groups:
 
   - alert: PrometheusRuleEvaluationFailures
     expr: increase(prometheus_rule_evaluation_failures_total[3m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -151,7 +151,7 @@ groups:
 
   - alert: PrometheusTemplateTextExpansionFailures
     expr: increase(prometheus_template_text_expansion_failures_total[3m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -169,7 +169,7 @@ groups:
 
   - alert: PrometheusNotificationsBacklog
     expr: min_over_time(prometheus_notifications_queue_length[10m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -178,7 +178,7 @@ groups:
 
   - alert: PrometheusAlertmanagerNotificationFailing
     expr: rate(alertmanager_notifications_failed_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -187,7 +187,7 @@ groups:
 
   - alert: PrometheusTargetEmpty
     expr: prometheus_sd_discovered_targets == 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -214,7 +214,7 @@ groups:
 
   - alert: PrometheusTargetScrapeDuplicate
     expr: increase(prometheus_target_scrapes_sample_duplicate_timestamp_total[5m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -223,7 +223,7 @@ groups:
 
   - alert: PrometheusTsdbCheckpointCreationFailures
     expr: increase(prometheus_tsdb_checkpoint_creations_failed_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -232,7 +232,7 @@ groups:
 
   - alert: PrometheusTsdbCheckpointDeletionFailures
     expr: increase(prometheus_tsdb_checkpoint_deletions_failed_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -241,7 +241,7 @@ groups:
 
   - alert: PrometheusTsdbCompactionsFailed
     expr: increase(prometheus_tsdb_compactions_failed_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -250,7 +250,7 @@ groups:
 
   - alert: PrometheusTsdbHeadTruncationsFailed
     expr: increase(prometheus_tsdb_head_truncations_failed_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -259,7 +259,7 @@ groups:
 
   - alert: PrometheusTsdbReloadFailures
     expr: increase(prometheus_tsdb_reloads_failures_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -268,7 +268,7 @@ groups:
 
   - alert: PrometheusTsdbWalCorruptions
     expr: increase(prometheus_tsdb_wal_corruptions_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -277,7 +277,7 @@ groups:
 
   - alert: PrometheusTsdbWalTruncationsFailed
     expr: increase(prometheus_tsdb_wal_truncations_failed_total[1m]) > 0
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -286,7 +286,7 @@ groups:
 
   - alert: PrometheusTimeserieCardinality
     expr: label_replace(count by(__name__) ({__name__=~".+"}), "name", "$1", "__name__", "(.+)") > 10000
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -297,7 +297,7 @@ groups:
   rules:
   - alert: HostOutOfMemory
     expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -306,7 +306,7 @@ groups:
 
   - alert: HostMemoryUnderMemoryPressure
     expr: (rate(node_vmstat_pgmajfault[1m]) > 1000) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -364,7 +364,7 @@ groups:
   # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
   - alert: HostOutOfDiskSpace
     expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -376,7 +376,7 @@ groups:
   # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
   - alert: HostDiskWillFillIn24Hours
     expr: ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -385,7 +385,7 @@ groups:
 
   - alert: HostOutOfInodes
     expr: (node_filesystem_files_free / node_filesystem_files * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -394,7 +394,7 @@ groups:
 
   - alert: HostInodesWillFillIn24Hours
     expr: (node_filesystem_files_free / node_filesystem_files * 100 < 10 and predict_linear(node_filesystem_files_free[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -403,7 +403,7 @@ groups:
 
   - alert: HostUnusualDiskReadLatency
     expr: (rate(node_disk_read_time_seconds_total[1m]) / rate(node_disk_reads_completed_total[1m]) > 0.1 and rate(node_disk_reads_completed_total[1m]) > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -412,7 +412,7 @@ groups:
 
   - alert: HostUnusualDiskWriteLatency
     expr: (rate(node_disk_write_time_seconds_total[1m]) / rate(node_disk_writes_completed_total[1m]) > 0.1 and rate(node_disk_writes_completed_total[1m]) > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -440,7 +440,7 @@ groups:
 
   - alert: HostCpuStealNoisyNeighbor
     expr: (avg by(instance) (rate(node_cpu_seconds_total{mode="steal"}[5m])) * 100 > 10) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -449,7 +449,7 @@ groups:
 
   - alert: HostCpuHighIowait
     expr: (avg by (instance) (rate(node_cpu_seconds_total{mode="iowait"}[5m])) * 100 > 10) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -470,7 +470,7 @@ groups:
   # Please read: https://github.com/samber/awesome-prometheus-alerts/issues/58
   - alert: HostContextSwitching
     expr: ((rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 10000) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -488,7 +488,7 @@ groups:
 
   - alert: HostSystemdServiceCrashed
     expr: (node_systemd_unit_state{state="failed"} == 1) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -506,7 +506,7 @@ groups:
 
   - alert: HostNodeOvertemperatureAlarm
     expr: (node_hwmon_temp_crit_alarm_celsius == 1) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -515,7 +515,7 @@ groups:
 
   - alert: HostRaidArrayGotInactive
     expr: (node_md_state{state="inactive"} > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: critical
     annotations:
@@ -524,7 +524,7 @@ groups:
 
   - alert: HostRaidDiskFailure
     expr: (node_md_disks{state="failed"} > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -542,7 +542,7 @@ groups:
 
   - alert: HostOomKillDetected
     expr: (increase(node_vmstat_oom_kill[1m]) > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -551,7 +551,7 @@ groups:
 
   - alert: HostEdacCorrectableErrorsDetected
     expr: (increase(node_edac_correctable_errors_total[1m]) > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: info
     annotations:
@@ -560,7 +560,7 @@ groups:
 
   - alert: HostEdacUncorrectableErrorsDetected
     expr: (node_edac_uncorrectable_errors_total > 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -569,7 +569,7 @@ groups:
 
   - alert: HostNetworkReceiveErrors
     expr: (rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -578,7 +578,7 @@ groups:
 
   - alert: HostNetworkTransmitErrors
     expr: (rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -587,7 +587,7 @@ groups:
 
   - alert: HostNetworkInterfaceSaturated
     expr: ((rate(node_network_receive_bytes_total{device!~"^tap.*|^vnet.*|^veth.*|^tun.*"}[1m]) + rate(node_network_transmit_bytes_total{device!~"^tap.*|^vnet.*|^veth.*|^tun.*"}[1m])) / node_network_speed_bytes{device!~"^tap.*|^vnet.*|^veth.*|^tun.*"} > 0.8 < 10000) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 1m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -596,7 +596,7 @@ groups:
 
   - alert: HostNetworkBondDegraded
     expr: ((node_bonding_active - node_bonding_slaves) != 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -623,7 +623,7 @@ groups:
 
   - alert: HostClockNotSynchronising
     expr: (min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -644,7 +644,7 @@ groups:
   # This rule can be very noisy in dynamic infra with legitimate container start/stop/deployment.
   - alert: ContainerKilled
     expr: time() - container_last_seen > 60
-    for: 0m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -663,7 +663,7 @@ groups:
 
   - alert: ContainerHighCpuUtilization
     expr: (sum(rate(container_cpu_usage_seconds_total{name!=""}[3m])) BY (instance, name) * 100) > 80
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -673,7 +673,7 @@ groups:
   # See https://medium.com/faun/how-much-is-too-much-the-linux-oomkiller-and-used-memory-d32186f29c9d
   - alert: ContainerHighMemoryUsage
     expr: (sum(container_memory_working_set_bytes{name!=""}) BY (instance, name) / sum(container_spec_memory_limit_bytes > 0) BY (instance, name) * 100) > 80
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -682,7 +682,7 @@ groups:
 
   - alert: ContainerVolumeUsage
     expr: (1 - (sum(container_fs_inodes_free{name!=""}) BY (instance) / sum(container_fs_inodes_total) BY (instance))) * 100 > 80
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
@@ -691,7 +691,7 @@ groups:
 
   - alert: ContainerHighThrottleRate
     expr: rate(container_cpu_cfs_throttled_seconds_total[3m]) > 1
-    for: 2m
+    for: 5m
     labels:
       severity: warning
     annotations:
